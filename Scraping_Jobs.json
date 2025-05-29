@@ -1,0 +1,469 @@
+{
+  "name": "Scraping Jobs",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://wuzzuf.net/search/jobs/?filters[country][0]={{ $json.location }}&filters[post_date][0]=within_24_hours&q={{ $json.job_title }}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        -640
+      ],
+      "id": "c06a6426-fc66-4ed4-8daf-36262491f36b",
+      "name": "Fetch Wuzzuf jobs"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Internship Opportunity",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #f7f7f7; color: #333; padding: 20px;\">\n  <div style=\"background-color: #ffffff; border-radius: 10px; padding: 20px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);\">\n    <h2 style=\"text-align: center; color: #1a73e8;\">🎯 Job Match Recommendation</h2>\n\n    <div style=\"margin-top: 20px; padding: 15px; border-top: 1px solid #eee;\">\n      <p><strong>🏢 Company:</strong> \n        <a href=\"{{ $json.company_url }}\" style=\"color: #1a73e8; text-decoration: none;\" target=\"_blank\">\n          {{ $json.company }}\n        </a>\n      </p>\n      <p><strong>💼 Job Title:</strong> {{ $json.title }}</p>\n      <p><strong>🚀 Platform:</strong> {{ $json.platform }}</p>\n\n      <a href=\"{{ $json.job_link }}\" style=\"display: inline-block; margin-top: 10px; padding: 10px 15px; background-color: #1a73e8; color: #fff; text-decoration: none; border-radius: 5px;\">Apply Now</a>\n    </div>\n\n    <div style=\"margin-top: 30px; font-size: 12px; color: #999; text-align: center;\">\n      You’re receiving this job match based on your resume analysis. Best of luck! 🚀\n    </div>\n  </div>\n</body>\n</html>\n",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Jobs Automation"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        -460
+      ],
+      "id": "708c1b0c-6f59-4dd4-8c07-c19e53550dc7",
+      "name": "Send email with job details",
+      "webhookId": "100331b9-dd9f-4c6e-ac4c-2ce8e414ae67",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2JjWxEyGxrc8jnsT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Wuzzuf Jobs",
+        "height": 340,
+        "width": 900,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -720
+      ],
+      "id": "b960ab47-bb46-4d0f-9a72-b17ddb9eb4ad",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## send jobs to candidate",
+        "height": 320,
+        "width": 620,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -580
+      ],
+      "id": "d01f1663-93e1-4e02-8f70-2ef3dc2ceb1d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.linkedin.com/jobs/search?keywords={{ encodeURIComponent($('Read Users').item.json.job_title) }}&location={{ encodeURIComponent($('Read Users').item.json.location) }}&geoId=106155005&f_TPR=r86400&position=1&pageNum=0\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        -120
+      ],
+      "id": "92d8478b-c185-4343-8fca-3ab7c71e32c9",
+      "name": "Fetch linkedin jobs"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "company url",
+              "cssSelector": ".base-search-card__subtitle a.hidden-nested-link",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "title",
+              "cssSelector": "h3.base-search-card__title",
+              "returnArray": true
+            },
+            {
+              "key": "company",
+              "cssSelector": "h4.base-search-card__subtitle a.hidden-nested-link",
+              "returnArray": true
+            },
+            {
+              "key": "location",
+              "cssSelector": "span.job-search-card__location",
+              "returnArray": true
+            },
+            {
+              "key": "date",
+              "cssSelector": "time.job-search-card__listdate--new",
+              "returnArray": true
+            },
+            {
+              "key": "job_link",
+              "cssSelector": "a.base-card__full-link",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        -40,
+        -120
+      ],
+      "id": "26cee31e-4a60-410e-8aa1-be168cc9592f",
+      "name": "Extract linkedin jobs information"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "title",
+              "cssSelector": ".css-1gatmva h2.css-m604qf a",
+              "returnArray": true
+            },
+            {
+              "key": "company",
+              "cssSelector": ".css-1gatmva .css-d7j1kk a.css-17s97q8",
+              "returnArray": true
+            },
+            {
+              "key": "location",
+              "cssSelector": ".css-1gatmva .css-d7j1kk span.css-5wys0k",
+              "returnArray": true
+            },
+            {
+              "key": "date",
+              "cssSelector": ".css-1gatmva .css-d7j1kk div[class^=\"css-\"]",
+              "returnArray": true
+            },
+            {
+              "key": "job_link",
+              "cssSelector": ".css-1gatmva h2.css-m604qf a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "company url",
+              "cssSelector": ".css-1gatmva .css-d7j1kk a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        -40,
+        -640
+      ],
+      "id": "f8e93cf1-607c-40ec-83b2-40a780b0e1bf",
+      "name": "Extract wuzzuf jobs information"
+    },
+    {
+      "parameters": {
+        "jsCode": "const titles = $input.first().json.title;\nconst companies = $input.first().json.company;\nconst locations = $input.first().json.location;\nconst dates = $input.first().json.date;\nconst job_link = $input.first().json.job_link;\nconst company_url = $input.first().json[\"company url\"];\nconst email = $('Loop Over Users').first().json.email;\n\nconst jobs = [];\n\nfor (let i = 0; i < titles.length; i++) {\n\n  jobs.push({\n    json: {\n      title: titles[i],\n      company: companies[i],\n      location: locations[i],\n      date: dates[i],\n      job_link: job_link[i],\n      company_url: company_url[i],\n      platform: \"Linkedin\",\n      email: email\n    }\n  });\n}\n\nreturn jobs;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -120
+      ],
+      "id": "a432382e-9f51-497f-b1d4-fc397ff9a021",
+      "name": "format linkedin jobs"
+    },
+    {
+      "parameters": {
+        "jsCode": "const titles = $input.first().json.title;\nconst companies = $input.first().json.company;\nconst locations = $input.first().json.location;\nconst dates = $input.first().json.date;\nconst job_link = $input.first().json.job_link;\nconst company_url = $input.first().json[\"company url\"];\nconst email = $('Loop Over Users').first().json.email;\n\nconst jobs = [];\n\nfor (let i = 0; i < titles.length; i++) {\n\n  jobs.push({\n    json: {\n      title: titles[i],\n      company: companies[i],\n      location: locations[i],\n      date: dates[i],\n      job_link: job_link[i],\n      company_url: company_url[i],\n      platform: \"Wuzzuf\",\n      email: email\n    }\n  });\n}\n\nreturn jobs;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -640
+      ],
+      "id": "74137a58-8492-4a57-8dad-d7124b5ff861",
+      "name": "format wuzzuf jobs"
+    },
+    {
+      "parameters": {
+        "content": "## Linkedin Jobs",
+        "height": 340,
+        "width": 900,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -200
+      ],
+      "id": "3a148c45-e9b6-4033-9f53-e51a60aa89cb",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        920,
+        -460
+      ],
+      "id": "dc8509d2-bc2b-4370-b485-2f94a87e3853",
+      "name": "Append all jobs"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        -440
+      ],
+      "id": "904f8947-6335-4579-93fa-dd1ccf5e9744",
+      "name": "Loop Over Users"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q",
+          "mode": "list",
+          "cachedResultName": "n8n jobs workflow",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "candidate",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1020,
+        -440
+      ],
+      "id": "5f470938-7c86-448d-b793-26c4d007819a",
+      "name": "Read Users",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T6MAZ74Hxxf7yzOX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1240,
+        -440
+      ],
+      "id": "3c4cc795-8d9d-45ad-9f99-1272551774d9",
+      "name": "Daily Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## Getting users to search for their jobs.\n",
+        "height": 280,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1060,
+        -540
+      ],
+      "typeVersion": 1,
+      "id": "7146a565-fe65-48f5-ac70-20dd20438c40",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Fetch Wuzzuf jobs": {
+      "main": [
+        [
+          {
+            "node": "Extract wuzzuf jobs information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email with job details": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch linkedin jobs": {
+      "main": [
+        [
+          {
+            "node": "Extract linkedin jobs information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract linkedin jobs information": {
+      "main": [
+        [
+          {
+            "node": "format linkedin jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract wuzzuf jobs information": {
+      "main": [
+        [
+          {
+            "node": "format wuzzuf jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "format linkedin jobs": {
+      "main": [
+        [
+          {
+            "node": "Append all jobs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "format wuzzuf jobs": {
+      "main": [
+        [
+          {
+            "node": "Append all jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append all jobs": {
+      "main": [
+        [
+          {
+            "node": "Send email with job details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Users": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fetch linkedin jobs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Wuzzuf jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Users": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "141dc43e-980d-466f-8670-81b31063f6c8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "329e6778c3155402168861ad32f25370675d810a481bb6fa688e63a8a20a15f2"
+  },
+  "id": "QyJZVKaKzbGrJyV3",
+  "tags": []
+}

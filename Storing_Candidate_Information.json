@@ -1,0 +1,406 @@
+{
+  "name": "Storing Candidate Information",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Add Candidate Information",
+        "formDescription": "Fill candidate infromation to get relavant jobs",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "e.g. Elon Mask",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "e.g. sample@test.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "placeholder": "e.g. 01012345678",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Location",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Egypt"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Resume / CV",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Job title",
+              "placeholder": "e.g. ai intern",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Job Type",
+              "placeholder": "e.g. internship",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Skills",
+              "fieldType": "textarea",
+              "placeholder": "e.g. Python, Machine Learning, Frontend.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Linkedin URL",
+              "placeholder": "e.g. https://www.linkedin.com/in/<your_profile>/"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "ignoreBots": true
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -580,
+        40
+      ],
+      "id": "d00a9938-e94a-46ca-b4bb-134f6480bf65",
+      "name": "On form submission",
+      "webhookId": "9af1f414-f4bf-4c8f-950e-2674526a8697"
+    },
+    {
+      "parameters": {
+        "content": "## Storing Candidate Information",
+        "height": 420,
+        "width": 1300,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -100
+      ],
+      "id": "aa4e1089-4241-4644-838e-ada9ccc161e1",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Resume___CV",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        40
+      ],
+      "id": "a28d717e-8e77-4c07-af68-6af6339e40bc",
+      "name": "Extract text from Resume"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q",
+          "mode": "list",
+          "cachedResultName": "n8n jobs workflow",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "candidate",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "full_name": "={{ $('On form submission').item.json['Full Name'] }}",
+            "email": "={{ $('On form submission').item.json.Email }}",
+            "phone": "={{ $('On form submission').item.json['Phone Number'] }}",
+            "location": "={{ $('On form submission').item.json.Location }}",
+            "job_title": "={{ $('On form submission').item.json['Job title'] }}",
+            "job_type": "={{ $('On form submission').item.json['Job Type'] }}",
+            "skills": "={{ $('On form submission').item.json.Skills }}",
+            "linkedin_url": "={{ $('On form submission').item.json['Linkedin URL'] }}",
+            "resume": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "candidate_id",
+              "displayName": "candidate_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "full_name",
+              "displayName": "full_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resume",
+              "displayName": "resume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "job_title",
+              "displayName": "job_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "job_type",
+              "displayName": "job_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        460,
+        20
+      ],
+      "id": "12d12d9c-b148-429e-9fff-246e7e9d960c",
+      "name": "Add candidate information",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T6MAZ74Hxxf7yzOX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q",
+          "mode": "list",
+          "cachedResultName": "n8n jobs workflow",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "candidate",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyVXnaaspn69LtMJB711ay_G3P6gIJufKowD1Mb18_Q/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -200,
+        40
+      ],
+      "id": "084cbe61-e917-465f-b0d4-973d6792a793",
+      "name": "Read Candidates",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T6MAZ74Hxxf7yzOX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "02479d76-e398-47ca-a448-e4b2d05f9cf3",
+              "leftValue": "={{ $json.exist }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        200,
+        40
+      ],
+      "id": "ca8a8a51-3e27-4702-88a8-997af8c715a1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nfor (const item of $input.all()) {\n  if (item.json.email == $('On form submission').first().json.Email) {\n    return {\"exist\" : true}\n  }\n}\n\nreturn {\"exist\" : false};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        40
+      ],
+      "id": "4bcb7093-9f14-4eaa-98e2-c8d8257334e7",
+      "name": "Check for existance",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract text from Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract text from Resume": {
+      "main": [
+        [
+          {
+            "node": "Read Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Candidates": {
+      "main": [
+        [
+          {
+            "node": "Check for existance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Add candidate information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for existance": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55927ad3-66e0-438c-8168-2cbad868af70",
+  "meta": {
+    "instanceId": "329e6778c3155402168861ad32f25370675d810a481bb6fa688e63a8a20a15f2"
+  },
+  "id": "6IigoYz92dWLPbel",
+  "tags": []
+}
